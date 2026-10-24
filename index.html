@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>文字塔防 · Text Tower Defense</title>
+<style>
+  body{font-family:monospace;background:#0b1020;color:#cfe;max-width:640px;margin:2rem auto;line-height:1.5}
+  h1{color:#7fd1ff}
+  button{font:inherit;padding:.4rem .9rem;background:#1b3a6b;color:#cfe;border:1px solid #3a6bd6;border-radius:6px;cursor:pointer}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .stat{color:#ffd166}
+  .log{margin-top:1rem;height:180px;overflow:auto;border:1px solid #244;padding:.5rem;background:#06101f}
+</style>
+</head>
+<body>
+<h1>文字塔防</h1>
+<p>波次：<span id="wave" class="stat">0</span> ｜ 敌人：<span id="enemies" class="stat">0</span> ｜ 基地血量：<span id="hp" class="stat">100</span></p>
+<button id="start">开始下一波</button>
+<div class="log" id="log" aria-live="polite"></div>
+<script>
+  let wave = 0, hp = 100;
+  const log = (m) => {
+    const d = document.getElementById('log');
+    const p = document.createElement('div');
+    p.textContent = m;
+    d.appendChild(p);
+    d.scrollTop = d.scrollHeight;
+  };
+  document.getElementById('start').addEventListener('click', () => {
+    wave++;
+    const enemies = wave * 3;
+    document.getElementById('wave').textContent = wave;
+    document.getElementById('enemies').textContent = enemies;
+    log('第 ' + wave + ' 波来袭：' + enemies + ' 个敌人');
+    for (let i = 0; i < enemies; i++) { if (Math.random() < 0.3) hp -= 5; }
+    hp = Math.max(0, hp);
+    document.getElementById('hp').textContent = hp;
+    if (hp <= 0) {
+      log('基地失守，游戏结束');
+      document.getElementById('start').disabled = true;
+    } else {
+      log('第 ' + wave + ' 波结束，基地剩余 ' + hp + ' 血');
+    }
+  });
+  window.__GAME__ = { getState: () => ({ wave, hp }) };
+</script>
+</body>
+</html>
