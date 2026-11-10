@@ -1,6 +1,6 @@
 {
   "project": "蓝冰猎影：宇宙幽灵 / 第一关",
-  "run_at": "2026-11-10T18:04:51.719894+08:00",
+  "run_at": "2026-11-10T22:14:08.219158+08:00",
   "base_url": "http://127.0.0.1:8765/",
   "browser": "Chrome (Playwright, headless)",
   "checks": [
@@ -82,7 +82,7 @@
     {
       "name": "合成使装置数量减少",
       "pass": true,
-      "detail": "10 -> 6"
+      "detail": "10 -> 5"
     },
     {
       "name": "合成产生 Lv.2+ 装置",
@@ -102,7 +102,7 @@
     {
       "name": "回收返还光子预算",
       "pass": true,
-      "detail": "0 -> 16"
+      "detail": "0 -> 10"
     },
     {
       "name": "第 1 波已开始",
@@ -112,7 +112,7 @@
     {
       "name": "干扰粒子已从注入口生成",
       "pass": true,
-      "detail": "onfield=2 killed=0 queue=4"
+      "detail": "onfield=1 killed=1 queue=4"
     },
     {
       "name": "装置正在攻击并滤除干扰",
@@ -172,7 +172,7 @@
     {
       "name": "正常难度可完整通关（无 godMode）",
       "pass": true,
-      "detail": "phase=win wave=12 link=100 kills=171 merges=47 maxLv=5 sim=152s"
+      "detail": "phase=win wave=12 link=100 kills=160 merges=41 maxLv=5 sim=168s"
     },
     {
       "name": "正常难度通关后链路仍有余量（非险胜）",
@@ -182,7 +182,27 @@
     {
       "name": "正常难度产生了合成升级",
       "pass": true,
-      "detail": "merges=47 maxLv=5"
+      "detail": "merges=41 maxLv=5"
+    },
+    {
+      "name": "同一策略出现中间生命值结果（不再是 100 / 0 二元）",
+      "pass": true,
+      "detail": "[(11, 'win', 100), (23, 'win', 76), (37, 'win', 84), (41, 'lose', 0), (53, 'win', 76), (67, 'win', 20), (79, 'win', 98), (83, 'lose', 0), (97, 'win', 58), (101, 'win', 100)]"
+    },
+    {
+      "name": "掉血分布在 2 个以上波次（失败来自累积，不是单点）",
+      "pass": true,
+      "detail": "seed=[41, 67, 83]"
+    },
+    {
+      "name": "BOSS 穿透一次后链路仍存活（非一次性清零）",
+      "pass": true,
+      "detail": "{'passes': 1, 'link': 62, 'onField': 1, 'elapsed': 31.3}"
+    },
+    {
+      "name": "BOSS 穿透后重新进入战场（可继续被击杀）",
+      "pass": true,
+      "detail": "{'passes': 1, 'link': 62, 'onField': 1, 'elapsed': 31.3}"
     },
     {
       "name": "手机竖屏画布尺寸正确",
@@ -235,29 +255,118 @@
     "screenshots/13_mobile_touch.png"
   ],
   "normal_difficulty_run": {
-    "simulated_seconds": 152,
+    "simulated_seconds": 168,
     "state": {
       "phase": "win",
       "paused": false,
       "speed": 1,
       "wave": 12,
       "waveState": "running",
-      "energy": 78,
+      "energy": 128,
       "link": 100,
-      "score": 788,
+      "score": 713,
       "towers": 10,
       "lvMax": 5,
-      "enemies": 3,
+      "enemies": 1,
       "bullets": 0,
       "queue": 0,
       "boss": false,
+      "waveTrace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.18
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.26
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.54
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.59
+        },
+        {
+          "wave": 11,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.74
+        },
+        {
+          "wave": 12,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.59
+        }
+      ],
+      "bossHp": 0,
       "stats": {
-        "kills": 171,
-        "merges": 47,
+        "kills": 160,
+        "merges": 41,
         "maxLv": 5,
-        "deployed": 57,
+        "deployed": 51,
         "leaked": 0,
-        "damage": 55131.06849375026
+        "damage": 87324.35370999925,
+        "leakDamage": 0,
+        "bossPasses": 0
       },
       "canvas": {
         "w": 1440,
@@ -268,9 +377,964 @@
       "audioReady": true
     }
   },
+  "curve_batch": [
+    {
+      "seed": 11,
+      "phase": "win",
+      "link": 100,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.18
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.26
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.54
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.59
+        },
+        {
+          "wave": 11,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.74
+        },
+        {
+          "wave": 12,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.59
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 0
+    },
+    {
+      "seed": 23,
+      "phase": "win",
+      "link": 76,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.14
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.24
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.26
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.32
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.31
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.26
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.2
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.52
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.7
+        },
+        {
+          "wave": 11,
+          "link": 76,
+          "leaks": 6,
+          "dmg": 24,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 76,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.81
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 24
+    },
+    {
+      "seed": 37,
+      "phase": "win",
+      "link": 84,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.29
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.31
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.27
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.36
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.32
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.36
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.39
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.69
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.73
+        },
+        {
+          "wave": 11,
+          "link": 84,
+          "leaks": 4,
+          "dmg": 16,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 84,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.83
+        },
+        {
+          "wave": 12,
+          "link": 84,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.83
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 16
+    },
+    {
+      "seed": 41,
+      "phase": "lose",
+      "link": 0,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.45
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.23
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.39
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.24
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.25
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.44
+        },
+        {
+          "wave": 9,
+          "link": 92,
+          "leaks": 2,
+          "dmg": 8,
+          "deepest": 1
+        },
+        {
+          "wave": 10,
+          "link": 65,
+          "leaks": 3,
+          "dmg": 27,
+          "deepest": 1
+        },
+        {
+          "wave": 11,
+          "link": 5,
+          "leaks": 14,
+          "dmg": 60,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 0,
+          "leaks": 1,
+          "dmg": 38,
+          "deepest": 1
+        }
+      ],
+      "passes": 1,
+      "leakDamage": 133
+    },
+    {
+      "seed": 53,
+      "phase": "win",
+      "link": 76,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.38
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.25
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.23
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.23
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.29
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.5
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.72
+        },
+        {
+          "wave": 11,
+          "link": 76,
+          "leaks": 6,
+          "dmg": 24,
+          "deepest": 1.01
+        },
+        {
+          "wave": 12,
+          "link": 76,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.88
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 24
+    },
+    {
+      "seed": 67,
+      "phase": "win",
+      "link": 20,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.14
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.18
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.19
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.27
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.29
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.24
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.27
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.43
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.84
+        },
+        {
+          "wave": 10,
+          "link": 82,
+          "leaks": 2,
+          "dmg": 18,
+          "deepest": 1
+        },
+        {
+          "wave": 11,
+          "link": 20,
+          "leaks": 13,
+          "dmg": 62,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 20,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.71
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 80
+    },
+    {
+      "seed": 79,
+      "phase": "win",
+      "link": 98,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.3
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.37
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.2
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.25
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.21
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.44
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.51
+        },
+        {
+          "wave": 11,
+          "link": 98,
+          "leaks": 1,
+          "dmg": 2,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 98,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.54
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 2
+    },
+    {
+      "seed": 83,
+      "phase": "lose",
+      "link": 0,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.25
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.18
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.41
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.36
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.45
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.51
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.73
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.93
+        },
+        {
+          "wave": 11,
+          "link": 46,
+          "leaks": 13,
+          "dmg": 54,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 0,
+          "leaks": 2,
+          "dmg": 47,
+          "deepest": 1
+        }
+      ],
+      "passes": 1,
+      "leakDamage": 101
+    },
+    {
+      "seed": 97,
+      "phase": "win",
+      "link": 58,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.25
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.16
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.42
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.43
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.42
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.48
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.71
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.88
+        },
+        {
+          "wave": 11,
+          "link": 58,
+          "leaks": 9,
+          "dmg": 42,
+          "deepest": 1
+        },
+        {
+          "wave": 12,
+          "link": 58,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.8
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 42
+    },
+    {
+      "seed": 101,
+      "phase": "win",
+      "link": 100,
+      "wave": 12,
+      "trace": [
+        {
+          "wave": 1,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.14
+        },
+        {
+          "wave": 2,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.15
+        },
+        {
+          "wave": 3,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.15
+        },
+        {
+          "wave": 4,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.16
+        },
+        {
+          "wave": 5,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.14
+        },
+        {
+          "wave": 6,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.22
+        },
+        {
+          "wave": 7,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.17
+        },
+        {
+          "wave": 8,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.28
+        },
+        {
+          "wave": 9,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.53
+        },
+        {
+          "wave": 10,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.71
+        },
+        {
+          "wave": 11,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.82
+        },
+        {
+          "wave": 12,
+          "link": 100,
+          "leaks": 0,
+          "dmg": 0,
+          "deepest": 0.59
+        }
+      ],
+      "passes": 0,
+      "leakDamage": 0
+    }
+  ],
+  "boss_leak_probe": {
+    "passes": 1,
+    "link": 62,
+    "onField": 1,
+    "elapsed": 31.3
+  },
   "summary": {
-    "total": 42,
-    "passed": 42,
+    "total": 46,
+    "passed": 46,
     "failed": 0,
     "verdict": "PASS"
   }

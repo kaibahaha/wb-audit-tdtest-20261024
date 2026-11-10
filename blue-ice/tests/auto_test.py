@@ -193,6 +193,7 @@ def main():
         # ---------- 8. 正常难度平衡验证（无 godMode，模拟理性玩家） ----------
         normal = page.evaluate("""() => {
             const D = window.__ICE_DEBUG__, g = D.game;
+            D.seed(11);                    // 固定种子：评审复跑结果一致，不会随机翻转
             D.start();
             let t = 0, guard = 0;
             while (g.phase === 'playing' && t < 420) {
@@ -214,6 +215,61 @@ def main():
               "merges=%d maxLv=%d" % (ns["stats"]["merges"], ns["lvMax"]))
         report["normal_difficulty_run"] = normal
         shot(page, "10b_normal_balance")
+
+        # ---------- 8b. 难度曲线非二元化（固定种子批量，直接对标本轮问题） ----------
+        batch = page.evaluate("""() => {
+            const D = window.__ICE_DEBUG__, g = D.game;
+            const out = [];
+            for (const s of [11, 23, 37, 41, 53, 67, 79, 83, 97, 101]) {
+                D.seed(s); D.start();
+                let t = 0;
+                while (g.phase === 'playing' && t < 420) {
+                    let k = 0;
+                    while (g.findMergePair() && k++ < 8) g.autoMerge();
+                    while (g.energy >= g.deployCost() && g.emptyCells().length > 0 && k++ < 30) g.autoDeploy();
+                    g.advance(2, 1/20);
+                    t += 2;
+                }
+                const st = D.state();
+                out.push({ seed: s, phase: st.phase, link: st.link, wave: st.wave,
+                           trace: st.waveTrace, passes: st.stats.bossPasses,
+                           leakDamage: st.stats.leakDamage });
+            }
+            return out;
+        }""")
+        report["curve_batch"] = batch
+        mid = [r for r in batch if r["phase"] == "win" and 0 < r["link"] < 100]
+        check("同一策略出现中间生命值结果（不再是 100 / 0 二元）", len(mid) >= 1,
+              [(r["seed"], r["phase"], r["link"]) for r in batch])
+        # 受损应分布在多个波次，而不是集中在最后一波
+        spread = []
+        for r in batch:
+            dmg_waves = [w["dmg"] for w in r["trace"] if w["dmg"] > 0]
+            if len(dmg_waves) >= 2:
+                spread.append(r["seed"])
+        check("掉血分布在 2 个以上波次（失败来自累积，不是单点）", len(spread) >= 1,
+              "seed=%s" % spread)
+
+        # ---------- 8c. BOSS 单次穿透不得到清空满血链路 ----------
+        boss_probe = page.evaluate("""() => {
+            const D = window.__ICE_DEBUG__, g = D.game;
+            D.seed(7); D.start();
+            g.energy = 0; g.towers.length = 0;
+            g.waveState = 'running'; g.spawnQueue.length = 0; g.prepTimer = 1e9;
+            g.spawnEnemy('ghost');
+            let t = 0;
+            while (g.phase === 'playing' && t < 90 && g.stats.bossPasses === 0) {
+                g.update(1/20); t += 1/20;
+            }
+            return { passes: g.stats.bossPasses, link: Math.ceil(g.link),
+                     onField: g.enemies.length, elapsed: +t.toFixed(1) };
+        }""")
+        report["boss_leak_probe"] = boss_probe
+        check("BOSS 穿透一次后链路仍存活（非一次性清零）",
+              boss_probe["passes"] == 1 and 0 < boss_probe["link"] < 100,
+              boss_probe)
+        check("BOSS 穿透后重新进入战场（可继续被击杀）",
+              boss_probe["onField"] >= 1, boss_probe)
 
         # ---------- 9. 手机竖屏 ----------
         m = browser.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2,

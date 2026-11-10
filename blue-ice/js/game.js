@@ -87,12 +87,15 @@
   };
 
   // 宇宙线背景干扰 / 高能事件
+  // leak = 抵达数据链路时扣掉的链路百分比。取值原则：
+  //   普通干扰单只 2–9%（能被血条读出来），但绝不单独致命；
+  //   BOSS 穿透一次 38%（重创而非秒杀），会被弹回入口重新进入，最多三进三出。
   const ENEMIES = {
-    muon:     { name: '大气 μ 子',   hp: 36,   spd: 1.18, leak: 2,  color: '#8ad4ff', r: .16, reward: 2,  shape: 'muon' },
-    dark:     { name: '暗噪声',       hp: 22,   spd: 2.00, leak: 1,  color: '#b9a4ff', r: .12, reward: 2,  shape: 'dark' },
-    shower:   { name: '簇射背景',     hp: 68,   spd: 1.05, leak: 3,  color: '#67d8d0', r: .20, reward: 3,  shape: 'shower' },
-    cascadeN: { name: '级联噪声簇',   hp: 138,  spd: .70,  leak: 5,  color: '#4f9ee0', r: .27, reward: 5,  shape: 'cascade' },
-    ghost:    { name: '宇宙幽灵',     hp: 12000, spd: .38, leak: 100, color: '#c9b0ff', r: .52, reward: 60, shape: 'boss', boss: true }
+    muon:     { name: '大气 μ 子',   hp: 36,   spd: 1.18, leak: 4,  color: '#8ad4ff', r: .16, reward: 2,  shape: 'muon' },
+    dark:     { name: '暗噪声',       hp: 22,   spd: 2.00, leak: 2,  color: '#b9a4ff', r: .12, reward: 2,  shape: 'dark' },
+    shower:   { name: '簇射背景',     hp: 68,   spd: 1.05, leak: 6,  color: '#67d8d0', r: .20, reward: 3,  shape: 'shower' },
+    cascadeN: { name: '级联噪声簇',   hp: 138,  spd: .70,  leak: 9,  color: '#4f9ee0', r: .27, reward: 5,  shape: 'cascade' },
+    ghost:    { name: '宇宙幽灵',     hp: 12000, spd: .38, leak: 38, color: '#c9b0ff', r: .52, reward: 60, shape: 'boss', boss: true }
   };
 
   const WAVES = [
@@ -109,6 +112,13 @@
     { label: '观测窗口关闭前夜',      groups: [{ t: 'shower', n: 10, gap: .5 }, { t: 'dark', n: 12, gap: .3 }, { t: 'cascadeN', n: 2, gap: 2.2 }] },
     { label: '高能中微子事件 · 宇宙幽灵', groups: [{ t: 'ghost', n: 1, gap: 1 }, { t: 'dark', n: 10, gap: 1.1 }, { t: 'cascadeN', n: 2, gap: 3 }], boss: true }
   ];
+
+  /* 后段升压表（相对基准血量的额外倍率）
+     前 7 波保持平稳，让玩家把阵列搭起来；第 8 波起逐波加压，
+     使「要不要现在合成 / 现在补位」在每一波都变成真实取舍。
+     第 12 波的伴随干扰沿用第 11 波倍率：最后一波只应由 BOSS 定义难度。 */
+  const LATE_PRESSURE = { 8: 1.45, 9: 2.35, 10: 3.80, 11: 4.50 };
+  const pressureAt = w => LATE_PRESSURE[Math.min(w, TOTAL_WAVES - 1)] || 1;
 
   /* ======================= 游戏主体 ======================= */
   class Game {
@@ -137,6 +147,7 @@
       this.buildLegend();
       this.bindUI();
       this.bindPointer();
+      this._seed = null; this._rngState = 1;
       this.reset();
       this.last = performance.now();
       requestAnimationFrame(t => this.loop(t));
@@ -212,6 +223,24 @@
     isPath(c, r) { return PATH_SET.has(c + ',' + r); }
     isActive(c, r) { return ACTIVE_CELLS.has(c + ',' + r); }
 
+    /* ---------------- 可复现随机（xorshift32） ----------------
+       只用于影响玩法的随机（抽卡、选位抖动、装置初始相位）。
+       设置了种子后，同一操作序列会得到完全一致的对局，便于改前改后对比。 */
+    seed(s) {
+      this._seed = (s >>> 0) || 1;
+      this._rngState = this._seed >>> 0;
+      return this._seed;
+    }
+    rnd() {
+      if (this._seed === null || this._seed === undefined) return Math.random();
+      let x = this._rngState;
+      x ^= x << 13; x >>>= 0;
+      x ^= x >>> 17;
+      x ^= x << 5; x >>>= 0;
+      this._rngState = x || 1;
+      return this._rngState / 4294967296;
+    }
+
     posAt(d) {
       const cum = this.pathCum, pts = this.pathPts;
       d = clamp(d, 0, this.pathLen);
@@ -234,11 +263,15 @@
       this.spawnQueue = []; this.spawnClock = 0;
       this.enemies = []; this.towers = []; this.bullets = [];
       this.selected = null; this.drag = null; this.hoverCell = null;
-      this.stats = { kills: 0, merges: 0, maxLv: 1, deployed: 0, leaked: 0, damage: 0 };
+      this.stats = { kills: 0, merges: 0, maxLv: 1, deployed: 0, leaked: 0, damage: 0, leakDamage: 0, bossPasses: 0 };
       this.gameTime = 0; this.hudT = 0;
       this.bossRef = null; this.bossTimer = 0; this.bossStep = 0;
       this.godMode = false;
       this.uid = 1;
+      // 随机种子：测试时可复现同一抽卡序列（null = 真随机）
+      if (this._seed !== null && this._seed !== undefined) this._rngState = this._seed >>> 0;
+      this.waveTrace = []; this._waveLeaks = 0; this._waveDmg = 0; this._waveDeepest = 0;
+      this._waveStartLink = 100;
       this.fx.items.length = 0; this.fx.flash = 0; this.fx.tint = 0; this.fx.shake = 0;
       this.d.hud.classList.add('hidden'); this.d.dock.classList.add('hidden');
       this.d.inspector.classList.add('hidden'); this.d.pauseVeil.classList.add('hidden');
@@ -382,9 +415,9 @@
     pickType() {
       // 保底：场上已有可合成对时，提高抽到同类概率，降低随机挫败
       const pair = this.findMergePair();
-      if (pair && Math.random() < .34) return pair[0].type;
+      if (pair && this.rnd() < .34) return pair[0].type;
       const total = TOWER_KEYS.reduce((s, k) => s + TOWERS[k].weight, 0);
-      let x = Math.random() * total;
+      let x = this.rnd() * total;
       for (const k of TOWER_KEYS) { x -= TOWERS[k].weight; if (x <= 0) return k; }
       return 'dom';
     }
@@ -426,7 +459,7 @@
             if (t.type === type && t.lv === 1 && Math.abs(t.c - g.c) + Math.abs(t.r - g.r) <= 2) score += 5;
           }
         }
-        score += Math.random() * 1.5;
+        score += this.rnd() * 1.5;
         if (score > bestScore) { bestScore = score; best = g; }
       }
       return best;
@@ -445,7 +478,7 @@
       const type = forcedType || this.pickType();
       this.energy -= cost;
       const p = this.center(c, r);
-      const t = { id: this.uid++, c, r, x: p.x, y: p.y, type, lv: 1, cd: rand(0, .3),
+      const t = { id: this.uid++, c, r, x: p.x, y: p.y, type, lv: 1, cd: this.rnd() * .3,
         angle: 0, disabled: 0, born: this.gameTime, pulse: 1 };
       this.towers.push(t);
       this.stats.deployed++;
@@ -595,6 +628,8 @@
       this.waveState = 'running';
       this.spawnQueue = this.buildSpawnQueue(n);
       this.spawnClock = 0;
+      this._waveStartLink = Math.ceil(this.link);
+      this._waveLeaks = 0; this._waveDmg = 0; this._waveDeepest = 0;
       const w = WAVES[n - 1];
       const banner = this.d.waveBanner;
       banner.classList.remove('hidden', 'boss');
@@ -624,6 +659,7 @@
     }
 
     waveClear() {
+      this.pushWaveTrace();
       if (this.wave >= TOTAL_WAVES) { this.win(); return; }
       this.waveState = 'prep';
       this.prepTimer = 9;
@@ -634,11 +670,22 @@
       this.syncHUD(true);
     }
 
+    /** 记录本波「最深穿透深度 / 漏怪数 / 掉血」，用于难度曲线取证 */
+    pushWaveTrace() {
+      if (!this.wave) return;
+      this.waveTrace.push({
+        wave: this.wave, link: Math.ceil(this.link),
+        leaks: this._waveLeaks, dmg: this._waveDmg,
+        deepest: +this._waveDeepest.toFixed(2)
+      });
+    }
+
     spawnEnemy(type, atDist) {
       const def = ENEMIES[type];
-      // 前 8 波建立信心，第 9 波起额外升压，让最后 4 波与 BOSS 形成真正的高潮
-      const late = this.wave >= 9 ? 1 + (this.wave - 8) * .22 : 1;
-      const hpMul = def.boss ? 1 : (1 + (this.wave - 1) * .38) * late;
+      // 噪声强度按「威胁波次」计算：BOSS 波的伴随干扰沿用第 11 波强度，
+      // 避免最后一波同时叠加「更厚的杂兵」与「BOSS」，把压力变成一道突然的墙。
+      const tw = (def.boss || this.wave >= TOTAL_WAVES) ? Math.min(this.wave, TOTAL_WAVES - 1) : this.wave;
+      const hpMul = def.boss ? 1 : (1 + (tw - 1) * .38) * pressureAt(tw);
       const hp = Math.round(def.hp * hpMul);
       const dist = atDist === undefined ? 0 : atDist;
       const p = this.posAt(dist);
@@ -646,7 +693,7 @@
         id: this.uid++, type, hp, maxHp: hp, dist,
         spd: def.spd * this.cell, color: def.color, r: def.r * this.cell,
         x: p.x, y: p.y, trail: [], slow: 0, slowT: 0, markT: 0,
-        hitFlash: 0, phase: Math.random() * TAU, dead: false,
+        hitFlash: 0, phase: this.rnd() * TAU, dead: false,
         boss: !!def.boss, leak: def.leak, reward: def.reward
       };
       this.enemies.push(e);
@@ -686,14 +733,34 @@
     }
 
     leak(e) {
-      this.link = Math.max(0, this.link - e.leak);
+      const dmg = e.leak;
+      if (e.boss) this.stats.bossPasses = (this.stats.bossPasses || 0) + 1;
+      this.link = Math.max(0, this.link - dmg);
       this.stats.leaked++;
+      this.stats.leakDamage += dmg;
+      this._waveLeaks++; this._waveDmg += dmg;
       A.leak();
       this.fx.shock(this.core.x, this.core.y, '#ff7896');
-      this.flashScreen('hit', .45);
-      this.fx.shake = 12;
-      if (this.link <= 0) this.lose();
+      this.flashScreen('hit', e.boss ? .85 : .45);
+      this.fx.shake = e.boss ? 20 : 12;
+      // 把损失直接写在链路旁边：玩家必须能看懂「刚刚掉了多少」
+      this.fx.text(this.core.x, this.core.y - this.cell * .85, `-${dmg}%`,
+        { color: '#ff8fa8', size: Math.max(14, this.cell * (e.boss ? .3 : .17)), life: 1.15 });
+      if (this.link <= 0) { this.lose(); return; }
+      if (e.boss) this.bossPenetrated(e);
       this.syncHUD(true);
+    }
+
+    /** BOSS 穿透链路：重创但不结束，被弹回注入口重新进入 —— 变成一场可见的 DPS 竞赛 */
+    bossPenetrated(e) {
+      e.dist = 0; e.trail.length = 0;
+      const p = this.posAt(0); e.x = p.x; e.y = p.y;
+      this.enemies.push(e);
+      this.bossTimer = 4.8;
+      this.fx.cherenkov(this.core.x, this.core.y, 1.6, false);
+      this.fx.ring(this.core.x, this.core.y, { r0: 6, r1: this.cell * 3, color: '#ff9ab0', w: 2.5, life: .7 });
+      A.boss();
+      this.toast(`幽灵穿透阵列 · 链路 -${e.leak}% · 重新捕获窗口开启`);
     }
 
     fire(t, s) {
@@ -787,16 +854,15 @@
       A.bossPulse();
       this.fx.shock(b.x, b.y, '#c9b0ff');
       this.fx.tint = .85;
-      // 随机使 2 座装置短暂离线
+      // 随机使 2 座装置短暂离线：这是 BOSS 战唯一的干扰机制，
+      // 不再额外生成隐藏杂兵——第 12 波的伴随噪声已由波次表明确给出，
+      // 否则失败会被看不见的刷怪量决定，玩家无法从画面理解发生了什么。
       const active = this.towers.filter(t => t.disabled <= 0);
-      for (let i = 0; i < Math.min(3, active.length); i++) {
-        const t = active.splice(Math.floor(Math.random() * active.length), 1)[0];
-        t.disabled = 2.6;
+      for (let i = 0; i < Math.min(2, active.length); i++) {
+        const t = active.splice(Math.floor(this.rnd() * active.length), 1)[0];
+        t.disabled = 2.2;
         this.fx.ring(t.x, t.y, { r0: 2, r1: this.cell * .6, color: '#ff9ab0', w: 2, life: .5 });
       }
-      // 幽灵脉冲伴随的次级噪声
-      this.spawnEnemy('dark', Math.max(0, b.dist - this.cell * 3));
-      this.spawnEnemy('dark', Math.max(0, b.dist - this.cell * 4));
       this.toast('幽灵脉冲 · 部分装置离线');
     }
 
@@ -848,6 +914,7 @@
         e.trail.push({ x: e.x, y: e.y });
         if (e.trail.length > (e.boss ? 18 : 8)) e.trail.shift();
         e.x = p.x; e.y = p.y;
+        if (e.dist / this.pathLen > this._waveDeepest) this._waveDeepest = e.dist / this.pathLen;
         if (e.dist >= this.pathLen) {
           this.enemies.splice(i, 1);
           this.leak(e);
@@ -869,6 +936,7 @@
     /* ---------------- 结算 ---------------- */
     win() {
       if (this.phase !== 'playing') return;
+      this.pushWaveTrace();
       this.phase = 'win';
       A.win(); A.setIntensity(1, false);
       this.d.waveBanner.classList.add('hidden');
@@ -902,6 +970,7 @@
 
     lose() {
       if (this.phase !== 'playing') return;
+      this.pushWaveTrace();
       this.phase = 'lose';
       A.lose(); A.setIntensity(0, false);
       this.fx.shake = 14;
@@ -915,8 +984,10 @@
       $('resKicker').textContent = won ? 'OBSERVATION COMPLETE / 事件捕获' : 'DATA LINK LOST / 链路中断';
       $('resTitle').textContent = won ? '高能中微子事件 · 捕获成功' : '数据链路被背景干扰击穿';
       $('resDesc').textContent = won
-        ? '最后一束切伦科夫蓝光穿过 1450 米深冰，阵列完整记录下这次来自宇宙深处的稀有信号。'
-        : `观测在第 ${this.wave} 波中断。调整布阵与合成节奏，再试一次。`;
+        ? `最后一束切伦科夫蓝光穿过 1450 米深冰，阵列完整记录下这次来自宇宙深处的稀有信号。链路剩余 ${Math.ceil(this.link)}%。`
+        : (this.wave >= TOTAL_WAVES
+            ? `宇宙幽灵第 ${this.stats.bossPasses} 次穿透数据链路（每次 −${ENEMIES.ghost.leak}%），观测窗口关闭。进入 BOSS 波时链路只剩 ${this._waveStartLink}%——真正决定成败的，是穿透发生前你攒下了多少余量。`
+            : `观测在第 ${this.wave} 波中断：链路被逐波累积的背景干扰耗尽（本局漏过 ${this.stats.leaked} 个干扰，累计损失 ${this.stats.leakDamage}%）。检查哪几段裂隙通道没有被钻孔覆盖，并优先把同种装置合成到 Lv.3 以上。`);
       const stars = won ? (this.link >= 80 && this.stats.maxLv >= 4 ? 3 : (this.link >= 50 ? 2 : 1)) : 0;
       $('resStars').innerHTML = [0, 1, 2].map(i => `<span class="${i < stars ? '' : 'off'}">★</span>`).join('');
       $('resStats').innerHTML = `
@@ -1527,6 +1598,7 @@
     nextWave() { game.forceNextWave(); return game.snapshot(); },
     setLink(v) { game.link = v; return game.snapshot(); },
     godMode(v) { game.godMode = !!v; return game.snapshot(); },
+    seed(n) { return game.seed(n); },
     advance(sec, step) { return game.advance(sec, step); },
     forceLose() { game.link = 0; game.lose(); return game.snapshot(); },
     state() { return game.snapshot(); }
@@ -1540,6 +1612,8 @@
       towers: this.towers.length, lvMax: this.towers.reduce((m, t) => Math.max(m, t.lv), 0),
       enemies: this.enemies.length, bullets: this.bullets.length,
       queue: this.spawnQueue.length, boss: !!this.bossRef && !this.bossRef.dead,
+      waveTrace: this.waveTrace.slice(),
+      bossHp: this.bossRef && !this.bossRef.dead ? Math.round(this.bossRef.hp) : 0,
       stats: Object.assign({}, this.stats),
       canvas: { w: this.W, h: this.H, dpr: this.dpr, cell: Math.round(this.cell) },
       audioReady: A.ready

@@ -240,15 +240,15 @@ button:active{transform:translateY(1px)}
 .result-panel.lose .result-glow{background:radial-gradient(circle,rgba(255,90,130,.24),transparent 68%)}
 .result-panel.lose .panel-kicker{color:#ff9ab0}
 .result-panel.lose h2{background:linear-gradient(90deg,#ffdce5,#ff87a5);-webkit-background-clip:text;background-clip:text}
-.res-desc{font-size:12px;line-height:1.9;color:var(--mut);margin:0 0 16px}
+.res-desc{font-size:12.5px;line-height:1.9;color:#a9cbe3;margin:0 0 16px}
 .res-stars{font-size:30px;letter-spacing:10px;margin:6px 0 18px;color:#ffd98a;text-shadow:0 0 20px rgba(255,200,100,.6);height:38px}
 .res-stars .off{color:rgba(140,180,210,.22);text-shadow:none}
 .res-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .res-stats div{padding:11px 4px;border-radius:9px;border:1px solid rgba(125,205,255,.17);background:rgba(9,34,60,.55)}
-.res-stats span{display:block;font-size:9px;color:var(--dim);letter-spacing:.7px}
+.res-stats span{display:block;font-size:10px;color:#9dc3dc;letter-spacing:.7px}
 .res-stats b{display:block;font:700 17px var(--mono);color:#d5f2ff;margin-top:4px}
 .res-science{text-align:left;padding:12px 15px;border-radius:10px;border-left:2px solid var(--ice2);
-  background:rgba(18,70,120,.25);font-size:10.5px;line-height:1.85;color:#a9d5ee}
+  background:rgba(18,70,120,.25);font-size:11.5px;line-height:1.85;color:#c2e2f5}
 .res-science b{color:#b9ecff;letter-spacing:1px}
 .res-btns{margin-top:18px}
 
