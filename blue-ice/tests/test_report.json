@@ -1,0 +1,277 @@
+{
+  "project": "蓝冰猎影：宇宙幽灵 / 第一关",
+  "run_at": "2026-11-10T18:04:51.719894+08:00",
+  "base_url": "http://127.0.0.1:8765/",
+  "browser": "Chrome (Playwright, headless)",
+  "checks": [
+    {
+      "name": "首页 HTTP 200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "游戏对象已初始化",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "三个脚本模块均加载",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "初始状态为标题页",
+      "pass": true,
+      "detail": "title"
+    },
+    {
+      "name": "画布已按窗口尺寸建立",
+      "pass": true,
+      "detail": "{'w': 1440, 'h': 860, 'dpr': 1, 'cell': 118}"
+    },
+    {
+      "name": "教程简报出现",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "进入 playing 状态",
+      "pass": true,
+      "detail": "playing"
+    },
+    {
+      "name": "初始光子预算 130",
+      "pass": true,
+      "detail": "130"
+    },
+    {
+      "name": "数据链路 100%",
+      "pass": true,
+      "detail": "100"
+    },
+    {
+      "name": "Web Audio 引擎已初始化",
+      "pass": true,
+      "detail": "True"
+    },
+    {
+      "name": "HUD / 操作栏可见",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "点击空钻孔成功部署 1 座装置",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "部署扣除 20 光子",
+      "pass": true,
+      "detail": "110"
+    },
+    {
+      "name": "批量部署后共 10 座装置",
+      "pass": true,
+      "detail": "10"
+    },
+    {
+      "name": "存在可合成的同种同级装置",
+      "pass": true,
+      "detail": "True"
+    },
+    {
+      "name": "合成使装置数量减少",
+      "pass": true,
+      "detail": "10 -> 6"
+    },
+    {
+      "name": "合成产生 Lv.2+ 装置",
+      "pass": true,
+      "detail": "3"
+    },
+    {
+      "name": "选中装置显示信息卡",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "信息卡含等级与地形",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "回收返还光子预算",
+      "pass": true,
+      "detail": "0 -> 16"
+    },
+    {
+      "name": "第 1 波已开始",
+      "pass": true,
+      "detail": "(1, 'running')"
+    },
+    {
+      "name": "干扰粒子已从注入口生成",
+      "pass": true,
+      "detail": "onfield=2 killed=0 queue=4"
+    },
+    {
+      "name": "装置正在攻击并滤除干扰",
+      "pass": true,
+      "detail": "kills=3 bullets=0"
+    },
+    {
+      "name": "胜利测试阵容就绪",
+      "pass": true,
+      "detail": "14"
+    },
+    {
+      "name": "推进至第 12 波 BOSS",
+      "pass": true,
+      "detail": "12"
+    },
+    {
+      "name": "完整流程触发胜利结算",
+      "pass": true,
+      "detail": "win"
+    },
+    {
+      "name": "胜利时蓝光高潮先于结算面板",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "胜利面板可见",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "胜利面板文案正确",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "统计包含 12 波 / 击杀数",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "无布阵时触发失败结算",
+      "pass": true,
+      "detail": "lose"
+    },
+    {
+      "name": "失败时链路归零",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "失败面板可见且文案正确",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "正常难度可完整通关（无 godMode）",
+      "pass": true,
+      "detail": "phase=win wave=12 link=100 kills=171 merges=47 maxLv=5 sim=152s"
+    },
+    {
+      "name": "正常难度通关后链路仍有余量（非险胜）",
+      "pass": true,
+      "detail": "100"
+    },
+    {
+      "name": "正常难度产生了合成升级",
+      "pass": true,
+      "detail": "merges=47 maxLv=5"
+    },
+    {
+      "name": "手机竖屏画布尺寸正确",
+      "pass": true,
+      "detail": "{'w': 390, 'h': 844, 'dpr': 2, 'cell': 39}"
+    },
+    {
+      "name": "手机竖屏可正常部署",
+      "pass": true,
+      "detail": "8"
+    },
+    {
+      "name": "手机竖屏钻孔尺寸可点",
+      "pass": true,
+      "detail": "39"
+    },
+    {
+      "name": "触屏点击可部署",
+      "pass": true,
+      "detail": "8 -> 9"
+    },
+    {
+      "name": "无 pageerror",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "无 console error / 资源加载失败",
+      "pass": true,
+      "detail": "[]"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "screenshots": [
+    "screenshots/01_title.png",
+    "screenshots/02_briefing.png",
+    "screenshots/03_battle_empty.png",
+    "screenshots/04_deploy_click.png",
+    "screenshots/05_deployed_array.png",
+    "screenshots/06_merged_cherenkov.png",
+    "screenshots/07_inspector.png",
+    "screenshots/08_wave_combat.png",
+    "screenshots/09a_cherenkov_climax.png",
+    "screenshots/09_victory.png",
+    "screenshots/10_defeat.png",
+    "screenshots/10b_normal_balance.png",
+    "screenshots/11_mobile_title.png",
+    "screenshots/12_mobile_battle.png",
+    "screenshots/13_mobile_touch.png"
+  ],
+  "normal_difficulty_run": {
+    "simulated_seconds": 152,
+    "state": {
+      "phase": "win",
+      "paused": false,
+      "speed": 1,
+      "wave": 12,
+      "waveState": "running",
+      "energy": 78,
+      "link": 100,
+      "score": 788,
+      "towers": 10,
+      "lvMax": 5,
+      "enemies": 3,
+      "bullets": 0,
+      "queue": 0,
+      "boss": false,
+      "stats": {
+        "kills": 171,
+        "merges": 47,
+        "maxLv": 5,
+        "deployed": 57,
+        "leaked": 0,
+        "damage": 55131.06849375026
+      },
+      "canvas": {
+        "w": 1440,
+        "h": 860,
+        "dpr": 1,
+        "cell": 118
+      },
+      "audioReady": true
+    }
+  },
+  "summary": {
+    "total": 42,
+    "passed": 42,
+    "failed": 0,
+    "verdict": "PASS"
+  }
+}
